@@ -132,28 +132,37 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Configure kubectl
-      uses: azure/k8s-set-context@v3
-      with:
-        method: kubeconfig
-        kubeconfig: ${{ secrets.KUBE_CONFIG }}
-
-    - name: Deploy to Kubernetes
+    - name: Deploy to Kubernetes (Optional)
       run: |
-        # Update image tags in deployment files
-        sed -i "s|bookmydoctor-backend:latest|${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE }}:latest|g" k8s/backend-deployment.yaml
-        sed -i "s|bookmydoctor-frontend:latest|${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}:latest|g" k8s/frontend-deployment.yaml
+        echo "Kubernetes deployment skipped - requires KUBE_CONFIG secret"
+        echo "To enable deployment:"
+        echo "1. Add KUBE_CONFIG secret in GitHub repository settings"
+        echo "2. Ensure Kubernetes cluster is accessible"
+        echo "3. Uncomment the deployment steps below"
 
-        # Apply Kubernetes manifests
-        kubectl apply -f k8s/
+        # Uncomment these lines when KUBE_CONFIG is available:
+        # - name: Configure kubectl
+        #   uses: azure/k8s-set-context@v3
+        #   with:
+        #     method: kubeconfig
+        #     kubeconfig: ${{ secrets.KUBE_CONFIG }}
 
-        # Wait for rollout to complete
-        kubectl rollout status deployment/backend
-        kubectl rollout status deployment/frontend
-        kubectl rollout status deployment/mysql
+        # - name: Deploy to Kubernetes
+        #   run: |
+        #     # Update image tags in deployment files
+        #     sed -i "s|bookmydoctor-backend:latest|${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE }}:latest|g" k8s/backend-deployment.yaml
+        #     sed -i "s|bookmydoctor-frontend:latest|${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}:latest|g" k8s/frontend-deployment.yaml
 
-    - name: Verify deployment
-      run: |
-        kubectl get pods
-        kubectl get services
-        kubectl get ingress
+        #     # Apply Kubernetes manifests
+        #     kubectl apply -f k8s/
+
+        #     # Wait for rollout to complete
+        #     kubectl rollout status deployment/backend
+        #     kubectl rollout status deployment/frontend
+        #     kubectl rollout status deployment/mysql
+
+        # - name: Verify deployment
+        #   run: |
+        #     kubectl get pods
+        #     kubectl get services
+        #     kubectl get ingress
