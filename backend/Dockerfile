@@ -1,5 +1,5 @@
 # Multi-stage build for Spring Boot backend
-FROM adoptopenjdk:11-jdk-hotspot AS build
+FROM eclipse-temurin:17-jdk AS build
 
 WORKDIR /app
 
@@ -18,7 +18,7 @@ COPY src ./src
 RUN ./mvnw clean package -DskipTests
 
 # Runtime stage
-FROM adoptopenjdk:11-jre-hotspot
+FROM eclipse-temurin:17-jre
 
 WORKDIR /app
 

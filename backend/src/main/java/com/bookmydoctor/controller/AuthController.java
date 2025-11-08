@@ -14,7 +14,7 @@ public class AuthController {
     @Autowired
     private UserRepository userRepository;
 
-    @PostMapping("/register")
+    @PostMapping("/api/register")
     public ResponseEntity<?> registerUser(@RequestBody User user) {
         if (userRepository.findByEmail(user.getEmail()) != null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -31,7 +31,7 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/login")
+    @PostMapping("/api/login")
     public ResponseEntity<?> loginUser(@RequestBody User loginData) {
         User user = userRepository.findByEmail(loginData.getEmail());
 
